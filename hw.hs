@@ -1,4 +1,5 @@
 import Data.Function
+import Heh (sphereVolume)
 
 factorial :: (Integral a) => a -> a
 factorial 0 = 1
@@ -12,8 +13,8 @@ mySum2 l = case l of
     [] -> 0
     h:t -> h + mySum2 t
 
-myMax :: (Ord a) => [a] -> a
-myMax = foldl1 max
+myMax :: (Num a) => [a] -> a
+myMax = foldl1 (+)
 
 quickSort :: (Ord a) => [a] -> [a]
 quickSort [] = []
@@ -60,7 +61,40 @@ bmiTell weight height
           normal = 25.0
           fat = 30.0
 
+data Frog = Frog {
+        aaa :: Int,
+        bbb :: [Char]
+    } deriving (Show)
+
+class Comp a where
+    (>--) :: a -> a -> Bool
+
+data TrafficLight = Green | Yellow | Red
+instance Comp TrafficLight where
+    Green >-- Green = False
+    Yellow >-- Yellow = False
+    Red >-- Red = False
+    Green >-- Red = False
+    Green >-- Yellow = False
+    Yellow >-- Green = True
+    Yellow >-- Red = False
+    Red >-- Green = True
+    Red >-- Yellow = True
+
+data MyMaybe a = Some a | None deriving Show
+
+instance (Eq m) => Eq (MyMaybe m) where
+    Some x == Some y = y == x 
+    None == None = True
+    _ == _ = False
+
+mmap :: (a -> b) -> MyMaybe a -> MyMaybe b
+mmap _ None = None
+mmap func (Some a) = (Some . func) a
+
 main = do
-    take 10 . filter (>5) . map (^3) $ [1..]
-    & \(x:xs) -> reverse xs
-    & print
+    let aaa :: MyMaybe Int = Some 5
+    print aaa
+    let bbb = mmap (show . (*2)) aaa
+    print bbb
+    print $ Green >-- Yellow

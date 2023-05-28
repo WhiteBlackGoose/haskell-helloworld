@@ -1,8 +1,11 @@
+{-# OPTIONS_GHC -Wno-unused-imports #-}
+{-# OPTIONS_GHC -Wno-unused-top-binds #-}
 import Data.Function
 import Heh (sphereVolume)
-import Control.Monad (forM, when)
+import Control.Monad (forM, when, replicateM)
 import System.Directory.Internal.Prelude (getArgs)
-import System.Random (random)
+import System.Random (random, mkStdGen, randomIO)
+import System.Random.Stateful (StdGen)
 
 factorial :: (Integral a) => a -> a
 factorial 0 = 1
@@ -87,7 +90,7 @@ instance Comp TrafficLight where
 data MyMaybe a = Some a | None deriving Show
 
 instance (Eq m) => Eq (MyMaybe m) where
-    Some x == Some y = y == x 
+    Some x == Some y = y == x
     None == None = True
     _ == _ = False
 
@@ -101,11 +104,11 @@ data MyList a = a :* (MyList a) | Empty
 
 instance Show a => Show (MyList a) where
     show :: MyList a -> String
-    show l = 
+    show l =
         let traverse l =
                 case l of
                 Empty -> ""
-                (h :* t) -> case t of 
+                (h :* t) -> case t of
                     Empty -> show h
                     _ -> show h ++ " " ++ traverse t
         in
@@ -115,16 +118,21 @@ instance Functor MyList where
     fmap _ Empty = Empty
     fmap m (v :* rest) = m v :* fmap m rest
 
-class Tofu t where  
-    tofu :: j a -> t a j  
+class Tofu t where
+    tofu :: j a -> t a j
 
-data Frank a b  = Frank {frankField :: b a} deriving (Show)  
+data Frank a b  = Frank {frankField :: b a} deriving (Show)
 instance Tofu Frank where
     tofu m = Frank { frankField = m }
 
--- r = random 44
+main = replicateM 4 (randomIO @Int >>= print)
 
-main = getArgs >>= putStrLn . unlines . filter ((<10) . length)
+-- main = (sequence . fst) $ foldr (\_ (io, oldGen) -> 
+--         let 
+--             (n, newGen) :: (Int, StdGen) = random oldGen
+--         in (print n : io, newGen)
+--         ) ([], mkStdGen 100) [1..4]
+-- main = getArgs >>= putStrLn . unlines . filter ((<10) . length)
 -- main = do
 --     allLines <- getContents
 --     forM (lines allLines) (\line -> do

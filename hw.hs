@@ -1,5 +1,7 @@
 import Data.Function
 import Heh (sphereVolume)
+import Control.Monad (forM, when)
+import System.Directory.Internal.Prelude (getArgs)
 
 factorial :: (Integral a) => a -> a
 factorial 0 = 1
@@ -112,13 +114,17 @@ instance Functor MyList where
     fmap _ Empty = Empty
     fmap m (v :* rest) = m v :* fmap m rest
 
+class Tofu t where  
+    tofu :: j a -> t a j  
 
-main = do
-    let quack r :: forall a . a -> [a] = [r]
-    let myL :: MyList Int = 1 :* 2 :* 3 :* 4 :* Empty
-    print . fmap (*2) $ myL
-    let aaa :: MyMaybe Int = Some 5
-    print aaa
-    let bbb = mmap (show . (*2)) aaa
-    print bbb
-    print $ Green >-- Yellow
+data Frank a b  = Frank {frankField :: b a} deriving (Show)  
+instance Tofu Frank where
+    tofu m = Frank { frankField = m }
+
+main = getArgs >>= putStrLn . unlines . filter ((<10) . length)
+-- main = do
+--     allLines <- getContents
+--     forM (lines allLines) (\line -> do
+--         when (length line < 10) $ do
+--             putStrLn line
+--         )

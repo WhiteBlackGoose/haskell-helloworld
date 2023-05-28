@@ -2,3 +2,6 @@
 *.o
 out
 dist-newstyle/cache
+.ghc.environment.x86_64-linux-9.2.7
+dist-newstyle/build/x86_64-linux/ghc-9.2.7/haskell-helloworld-0.1.0.0/x/haskell-helloworld
+dist-newstyle/packagedb/ghc-9.2.7

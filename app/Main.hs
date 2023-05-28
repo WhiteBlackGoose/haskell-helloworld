@@ -6,6 +6,8 @@ import Control.Monad (forM, when, replicateM)
 import System.Directory.Internal.Prelude (getArgs)
 import System.Random (random, mkStdGen, randomIO)
 import System.Random.Stateful (StdGen)
+import Data.Functor.Contravariant (Contravariant(contramap))
+import Data.List (intersperse)
 
 factorial :: (Integral a) => a -> a
 factorial 0 = 1
@@ -121,12 +123,24 @@ instance Functor MyList where
 class Tofu t where
     tofu :: j a -> t a j
 
-data Frank a b  = Frank {frankField :: b a} deriving (Show)
+data Frank a b = Frank {frankField :: b a} deriving (Show)
 instance Tofu Frank where
     tofu m = Frank { frankField = m }
 
-main = replicateM 4 (randomIO @Int >>= print)
+revPolish :: forall a. (Num a, Read a) => String -> a
+revPolish = head . foldl calc [] . words
+    where calc st el = case (el, st) of
+            ("+", n1:n2:t) -> (n1 + n2) : t
+            ("-", n1:n2:t) -> (n1 - n2) : t
+            ("*", n1:n2:t) -> (n1 * n2) : t
+            (n, t) -> (read n::a) : t
 
+calc :: forall a. (Num a, Read a) => String -> a
+
+daaa = sequence $ [Just 5, Just 3, Nothing]
+main = do
+    print (revPolish "5 6 + 3 *" )
+-- main = traverse print =<< replicateM 4 (randomIO @Int >>= print)
 -- main = (sequence . fst) $ foldr (\_ (io, oldGen) -> 
 --         let 
 --             (n, newGen) :: (Int, StdGen) = random oldGen

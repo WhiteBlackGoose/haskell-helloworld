@@ -92,12 +92,31 @@ mmap :: (a -> b) -> MyMaybe a -> MyMaybe b
 mmap _ None = None
 mmap func (Some a) = (Some . func) a
 
-data MyList a = Head a (MyList a) | Empty
+
+infixr 5 :*
+data MyList a = a :* (MyList a) | Empty
+
+instance Show a => Show (MyList a) where
+    show :: MyList a -> String
+    show l = 
+        let traverse l =
+                case l of
+                Empty -> ""
+                (h :* t) -> case t of 
+                    Empty -> show h
+                    _ -> show h ++ " " ++ traverse t
+        in
+        "[" ++ traverse l ++ "]"
 
 instance Functor MyList where
-    fmap m c = map m c
+    fmap _ Empty = Empty
+    fmap m (v :* rest) = m v :* fmap m rest
+
 
 main = do
+    let quack r :: forall a . a -> [a] = [r]
+    let myL :: MyList Int = 1 :* 2 :* 3 :* 4 :* Empty
+    print . fmap (*2) $ myL
     let aaa :: MyMaybe Int = Some 5
     print aaa
     let bbb = mmap (show . (*2)) aaa

@@ -92,6 +92,11 @@ mmap :: (a -> b) -> MyMaybe a -> MyMaybe b
 mmap _ None = None
 mmap func (Some a) = (Some . func) a
 
+data MyList a = Head a (MyList a) | Empty
+
+instance Functor MyList where
+    fmap m c = map m c
+
 main = do
     let aaa :: MyMaybe Int = Some 5
     print aaa

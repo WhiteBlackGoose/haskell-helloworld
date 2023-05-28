@@ -5,7 +5,7 @@
       buildInputs = [
         haskell-language-server
         ghc
-        stack
+        cabal-install
       ];
     };
   };

@@ -1,3 +1,4 @@
 *.hi
 *.o
 out
+dist-newstyle/cache

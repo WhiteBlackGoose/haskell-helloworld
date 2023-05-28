@@ -2,6 +2,7 @@ import Data.Function
 import Heh (sphereVolume)
 import Control.Monad (forM, when)
 import System.Directory.Internal.Prelude (getArgs)
+import System.Random
 
 factorial :: (Integral a) => a -> a
 factorial 0 = 1
@@ -120,6 +121,8 @@ class Tofu t where
 data Frank a b  = Frank {frankField :: b a} deriving (Show)  
 instance Tofu Frank where
     tofu m = Frank { frankField = m }
+
+r = random 44
 
 main = getArgs >>= putStrLn . unlines . filter ((<10) . length)
 -- main = do
